@@ -10,6 +10,9 @@ const PORT =  process.env.PORT || 3000;
 
 const app: Express = express();
 
+// Middlewares
+app.use(express.json());
+
 // Routes
 import { authRouter } from './routes/auth';
 
