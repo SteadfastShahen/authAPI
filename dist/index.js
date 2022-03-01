@@ -4,10 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var mongoose_1 = __importDefault(require("mongoose"));
+var mongoose_1 = require("mongoose");
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-mongoose_1.default.connect('mongodb://localhost:27017/users-db', function () { console.log('Successfully connected to db'); });
+//mongoose
+//connect('mongodb://localhost:27017/users-db', ()=>{console.log('Successfully connected to db')});
+(0, mongoose_1.connect)('mongodb+srv://testuser:KLy0KYHe1YlbO4CR@maincluster.7q6fv.mongodb.net/users-db?retryWrites=true&w=majority', function () { console.log('Successfully connected to db'); });
 var PORT = process.env.PORT || 3000;
 var app = (0, express_1.default)();
 // Middlewares

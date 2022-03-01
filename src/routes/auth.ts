@@ -1,37 +1,15 @@
-import mongoose from 'mongoose';
-import {registerUserController} from '../controllers/user'
-import express, { Express, Request, Response, Router } from 'express';
-import User from '../models/User.model';
-import bcrypt from 'bcrypt';
+//import mongoose from 'mongoose';
+import {registerUserController, getUserController, loginUserController} from '../controllers/user';
+import { Router, Request, Response } from 'express';
 
-const authRouter = express.Router();
+const authRouter = Router();
 
-authRouter.get('/users', async (req: Request, res: Response) => {
+authRouter.get('/users', getUserController);
 
-    const users = await User.find()
-    res.send(users)
-});
+authRouter.post('/register', registerUserController);
 
-
-authRouter.post('/register1', registerUserController);
-
-authRouter.post('/register', async (req: Request, res: Response)=>{
-    const currentUser = new User({
-        "name": req.body.name,
-        "email": req.body.email
-    });
-    try{
-        await currentUser.save()
-        res.send('Successfully registered')
-    } catch(err){
-        res.status(400).send(err)
-    }
-});
-
-authRouter.get('/login', (req: Request, res: Response)=>{
-    res.send('<h1>Login screen</h1>')
-});
+authRouter.post('/login', loginUserController);
 
 export {
-     authRouter,
+    authRouter,
 };
