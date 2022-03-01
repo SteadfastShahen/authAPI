@@ -1,0 +1,1 @@
+const EMAIL_EXIST = 'Email already exists';

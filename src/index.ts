@@ -5,9 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 //mongoose
-//connect('mongodb://localhost:27017/users-db', ()=>{console.log('Successfully connected to db')});
+connect('mongodb://localhost:27017/users-db', () => {
+    console.log('Successfully connected to db')
+});
 
-connect('mongodb+srv://testuser:KLy0KYHe1YlbO4CR@maincluster.7q6fv.mongodb.net/users-db?retryWrites=true&w=majority', ()=>{console.log('Successfully connected to db')});
+// connect('mongodb+srv://testuser:KLy0KYHe1YlbO4CR@maincluster.7q6fv.mongodb.net/users-db?retryWrites=true&w=majority', ()=>{console.log('Successfully connected to db')});
 
 const PORT =  process.env.PORT || 3000;
 
