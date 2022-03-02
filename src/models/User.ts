@@ -9,10 +9,11 @@ interface IUser extends Document {
 export const UserSchema = new Schema({
     name: { type:String, required: true },
     email: { type:String, required: true },
-    password: { type:String, required: true },
+    password: { type:String, required: true, minlength: 6 },
 });
   
 const User = model<IUser>('User', UserSchema);
+
 export {
     User,
 };
