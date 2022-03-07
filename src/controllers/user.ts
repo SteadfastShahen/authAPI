@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { getUserService, registerUserService, loginUserService } from '../service';
-import ErrorMessages from '../helper/errors';
+import { getUserService, registerUserService, loginUserService, confirmUserService } from '../service';
+import UIMessages from '../helper/messages';
 
 const getUserController = async (req: Request, res: Response) => {
     try{
@@ -17,7 +17,20 @@ const registerUserController = async (req: Request, res: Response) => {
         
         await registerUserService( name, email, password, confirmPass )
 
-        res.send({ msg: ErrorMessages.SUCCESS_REG })
+        res.send({ msg: UIMessages.CONFIRM_REQUEST })
+    }catch(err){
+        res.status(400).send( err )
+    }
+}
+
+const confirmUserController = async(req: Request, res: Response)=>{
+    try{
+        const { token } = req.body
+
+        await confirmUserService( token )
+
+        res.send( { msg: UIMessages.VERIFIED } )
+
     }catch(err){
         res.status(400).send( err )
     }
@@ -37,6 +50,7 @@ const loginUserController = async (req: Request, res: Response)=>{
 
 export {    
     getUserController,
-    registerUserController, 
+    registerUserController,
+    confirmUserController, 
     loginUserController
 }

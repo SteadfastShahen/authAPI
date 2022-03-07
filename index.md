@@ -6,6 +6,6 @@
 6. use try/catch for whole function /+
 7. user User.create /+
 8. user HttError to throw errors don't send them by res.json/send /+
-9. confirm registration endpoint /confirm 
+9. confirm registration endpoint /confirm /+
 
 add status code to all errors
