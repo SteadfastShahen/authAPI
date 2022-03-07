@@ -5,6 +5,7 @@ export default{
     INVALID_PASS: 'Invalid password',
     PASS_NO_MATCH: 'Passwords do not match',
     ACCESS_DENIED: 'Access denied',
-    CONFIRM_REQUEST: 'Please confirm your account',
-    VERIFIED: 'Account verified!'
+    CONFIRM_REQUEST: 'Token was sent to your email. Please confirm your account',
+    VERIFIED: 'Account verified',
+    INVALID_OPERATION: 'Invalid operation'
 }

@@ -45,7 +45,7 @@ const registerUserService = async ( name: string, email: string, password: strin
                     email: 'shahen@steadfast.tech'},
                 subject: 'Confirmation token',
                 text: `Welcome! Confirmation token: ${confirmToken}`,
-                html: `<h1>Welcome! Confirmation token: ${confirmToken}</h1>`
+                html: `<h1>Welcome!</h1> <h4><em>Confirmation token: ${confirmToken}</em></h4>`
             }
             sgMail.send(message)
             .then((response) => console.log('Email Sent Successfully'))
@@ -67,22 +67,29 @@ const registerUserService = async ( name: string, email: string, password: strin
     }
 }
 
-const confirmUserService = async( token: string ) => {
+const confirmUserService = async( token: string, currUserToken: string ) => {
     try{
         if(!token){
             let err = createError(400, UIMessages.ACCESS_DENIED)
             throw err
         }
         else{
-            const secret = process.env.TOKEN_CONFIRM_SECRET as string
+            const confirmSecret = process.env.TOKEN_CONFIRM_SECRET as string
+            const secret = process.env.TOKEN_SECRET as string
 
             interface JwtPayload {
                 _id: string
             }
-            const { _id } = verify(token, secret) as JwtPayload
-            console.log(_id);
+            const { _id: tokenId } = verify(token, confirmSecret) as JwtPayload
+            const { _id: currUserId } = verify(currUserToken, secret) as JwtPayload
 
-            await User.updateOne({ _id: _id }, { $set: { verified: true } })
+            if( tokenId === currUserId ){
+                await User.updateOne({ _id: tokenId }, { $set: { verified: true } })
+            }
+            else{
+                let err = createError(400, UIMessages.INVALID_OPERATION)
+                throw err
+            }
         }
     }catch(err: any){
         let error = createError(400, err.message)
@@ -93,13 +100,17 @@ const confirmUserService = async( token: string ) => {
 const loginUserService = async( email: string, password: string ) => {
     try{
         const currentUser = await User.findOne({ email: email })
-        if(!currentUser) 
-            throw new Error( UIMessages.EMAIL_NOT_REG )
+        if(!currentUser){
+            let error = createError(400, UIMessages.EMAIL_NOT_REG)
+            throw error
+        }
             
         const passValidation = await compare( password, currentUser.password )
         
-        if(!passValidation)
-            throw new Error( UIMessages.INVALID_PASS )
+        if(!passValidation){
+            let error = createError(400, UIMessages.INVALID_PASS)
+            throw error
+        }
         
         //change token secret from .env
         const secret = process.env.TOKEN_SECRET as string;
