@@ -9,3 +9,11 @@
 9. confirm registration endpoint /confirm /+
 
 add status code to all errors
+
+
+
+Step 2
+
+1. mongo watch 
+2. when user change his/her name we need to generate image by name;
+3. fix code visually (throw errs, email: email type expressions, spaces, remove emails from service, review if/else expressions[not required when throwing error], move interfaces to different file)
