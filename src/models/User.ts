@@ -7,6 +7,12 @@ interface IUser extends Document {
     verified: boolean;
     resetLink: String; 
 };
+
+interface UserDocument extends IUser {
+    fullName: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
   
 export const UserSchema = new Schema({
     name: { type:String, required: true },
@@ -16,8 +22,10 @@ export const UserSchema = new Schema({
     resetLink: { data: String, default: '' }
 });
   
-const User = model<IUser>('User', UserSchema);
+const User = model<IUser>('Users', UserSchema, 'Users');
+
 
 export {
     User,
+    UserDocument
 };

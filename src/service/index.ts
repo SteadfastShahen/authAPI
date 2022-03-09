@@ -46,7 +46,7 @@ const registerUserService = async ( name: string, email: string, password: strin
                 text: `Welcome! Confirmation token: ${confirmToken}`,
                 html: `<h1>Welcome!</h1> <h4><em>Confirmation token: ${confirmToken}</em></h4>`
             }
-            await sgMail.send( message )
+            //await sgMail.send( message )
         }
         else {
             const errMsg = emailCheck ? UIMessages.EMAIL_EXIST : UIMessages.PASS_NO_MATCH
@@ -125,7 +125,7 @@ const forgotPasswordService = async( email: string ) => {
             text: `Reset link: http://localhost:3000/auth/reset/${linkFinal}`,
             html: `<h1>Reset link:</h1> <a>http://localhost:3000/auth/reset/${linkFinal}</a>`
         }
-        await sgMail.send( message )
+        //await sgMail.send( message )
 
         await User.updateOne( { email }, { $set: { resetLink: linkFinal } })
 

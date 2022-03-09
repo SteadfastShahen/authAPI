@@ -1,10 +1,30 @@
 import '../env';
 import express, { Express, Request, Response } from 'express';
 import { connect } from 'mongoose';
+import { User, UserDocument } from './models/User';
+import { ChangeStreamDocument } from 'mongodb';
+import { generate } from 'text-to-image'; 
+import { join } from 'path';
 
 connect('mongodb://localhost:27017/users-db', () => {
     console.log('Successfully connected to db')
 });
+
+User.watch({ fullDocument: "updateLookup" }).on( "change", async ( change: ChangeStreamDocument<UserDocument> ) => {
+    if( change.updateDescription?.updatedFields.name ){
+        const newName: string = change.updateDescription?.updatedFields.name
+        
+        await generate( newName, {
+            fontFamily: 'Arial',
+            bgColor: 'white',
+            textColor: 'black',
+            debug: true,
+            debugFilename: join('images', `${newName}.png`),
+        })
+        
+    }
+    
+})
 
 const PORT =  process.env.PORT || 3000;
 
@@ -18,8 +38,5 @@ import { authRouter } from './routes/auth';
 
 app.use('/auth', authRouter);
 
-app.get('/',(req: Request, res: Response)=>{
-    res.send('<h1>Welcome Screen</h1>');
-});
+app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
-app.listen(PORT, ()=>console.log(`server running on port ${PORT}`));
