@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { getUserService, registerUserService, loginUserService, confirmUserService, forgotPasswordService, resetPasswordService } from '../service';
 import UIMessages from '../helper/messages';
 
-const getUserController = async (req: Request, res: Response) => {
+const getUserController = async ( req: Request, res: Response ) => {
     try{
         const users = await getUserService()
 
@@ -12,7 +12,7 @@ const getUserController = async (req: Request, res: Response) => {
     }
 }
 
-const registerUserController = async (req: Request, res: Response) => {
+const registerUserController = async ( req: Request, res: Response ) => {
     try{
         const { name, email, password, confirmPass } = req.body
         
@@ -24,14 +24,14 @@ const registerUserController = async (req: Request, res: Response) => {
     }
 }
 
-const confirmUserController = async (req: Request, res: Response)=>{
+const confirmUserController = async ( req: Request, res: Response )=>{
     try{
         const { token } = req.body
         if( !req.header('Authorization') ) {
             res.status(400).send({ msg: UIMessages.ACCESS_DENIED })
         }
         else{
-            const currUserToken: any = req.header('Authorization')
+            const currUserToken: any = req.header( 'Authorization' )
 
             await confirmUserService( token, currUserToken )
 
@@ -43,7 +43,7 @@ const confirmUserController = async (req: Request, res: Response)=>{
     }
 }
 
-const loginUserController = async (req: Request, res: Response)=>{
+const loginUserController = async ( req: Request, res: Response )=>{
     try{
         const { email, password } = req.body
 
@@ -55,7 +55,7 @@ const loginUserController = async (req: Request, res: Response)=>{
     }
 }
 
-const forgotPasswordController = async (req: Request, res: Response)=>{
+const forgotPasswordController = async ( req: Request, res: Response )=>{
     try{
         const { email } = req.body
 
@@ -68,7 +68,7 @@ const forgotPasswordController = async (req: Request, res: Response)=>{
     }
 }
 
-const resetPasswordController = async (req: Request, res: Response)=>{
+const resetPasswordController = async ( req: Request, res: Response )=>{
     try{
         const { newPass } = req.body
         const { resetLink } = req.params

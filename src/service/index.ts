@@ -1,12 +1,14 @@
 import { genSalt, hash, compare } from 'bcrypt';
-import { User } from '../models/User';
 import { sign, verify } from 'jsonwebtoken';
-import UIMessages from '../helper/messages';
 import sgMail from '@sendgrid/mail';
+import { JwtPayloadEmail, JwtPayloadId } from '../helper/interfaces';
+import emailMsgs from '../helper/emailMsgs';
+import UIMessages from '../helper/messages';
+import { User } from '../models/User';
 
-sgMail.setApiKey(process.env.API_KEY as string);
+sgMail.setApiKey( process.env.API_KEY as string );
 
-const createError = require('http-errors');
+const createError = require( 'http-errors' );
 
 const getUserService = async () => {
     try{
@@ -21,11 +23,11 @@ const registerUserService = async ( name: string, email: string, password: strin
     try {
         const emailCheck = await User.findOne({ email })
 
-        if(password == confirmPass && !emailCheck) {
+        if( password == confirmPass && !emailCheck ) {
             
             const salt = await genSalt(10);
             
-            const hashedPassword = await hash(password, salt)
+            const hashedPassword = await hash( password, salt )
 
             await User.create({
                 name,
@@ -35,16 +37,18 @@ const registerUserService = async ( name: string, email: string, password: strin
             
             const currUserId: any = await User.findOne({ email: email }, { _id: 1 });
             const secret = process.env.TOKEN_CONFIRM_SECRET as string;
-            const confirmToken = sign({ _id: currUserId._id }, secret)
+            const confirmToken = sign( { _id: currUserId._id }, secret )
+
+            const { fromName, fromEmail, subject, text, html1, html2 } = emailMsgs.registerUserMessage
 
             const message = {
                 to: email,
                 from: {
-                    name: 'Info App',
-                    email: 'shahen@steadfast.tech'},
-                subject: 'Confirmation token',
-                text: `Welcome! Confirmation token: ${confirmToken}`,
-                html: `<h1>Welcome!</h1> <h4><em>Confirmation token: ${confirmToken}</em></h4>`
+                    name: fromName,
+                    email: fromEmail},
+                subject,
+                text: text + confirmToken,
+                html: html1 + confirmToken + html2
             }
             //await sgMail.send( message )
         }
@@ -66,11 +70,8 @@ const confirmUserService = async( token: string, currUserToken: string ) => {
         const confirmSecret = process.env.TOKEN_CONFIRM_SECRET as string
         const secret = process.env.TOKEN_SECRET as string
 
-        interface JwtPayload {
-            _id: string
-        }
-        const { _id: tokenId } = verify( token, confirmSecret ) as JwtPayload
-        const { _id: currUserId } = verify( currUserToken, secret ) as JwtPayload
+        const { _id: tokenId } = verify( token, confirmSecret ) as JwtPayloadId
+        const { _id: currUserId } = verify( currUserToken, secret ) as JwtPayloadId
 
         if( tokenId === currUserId ) {
             await User.updateOne({ _id: tokenId }, { $set: { verified: true } });
@@ -108,22 +109,24 @@ const loginUserService = async( email: string, password: string ) => {
 
 const forgotPasswordService = async( email: string ) => {
     try{
-        const currentUser = await User.findOne({ email: email })
+        const currentUser = await User.findOne({ email })
         if( !currentUser ) {
-            throw createError(400, UIMessages.EMAIL_NOT_REG)
+            throw createError( 400, UIMessages.EMAIL_NOT_REG )
         }
 
         const resetSecret = process.env.RESET_SECRET as string
-        const linkFinal = sign({email}, resetSecret)
+        const linkFinal = sign({ email }, resetSecret)
+
+        const { name, fromEmail, subject, text, html1, html2 } = emailMsgs.forgotPassMessage
 
         const message = {
             to: email,
             from: {
-                name: 'Info App',
-                email: 'shahen@steadfast.tech'},
-            subject: 'Reset password',
-            text: `Reset link: http://localhost:3000/auth/reset/${linkFinal}`,
-            html: `<h1>Reset link:</h1> <a>http://localhost:3000/auth/reset/${linkFinal}</a>`
+                name,
+                email: fromEmail},
+            subject,
+            text: text + linkFinal,
+            html: html1 + linkFinal + html2
         }
         //await sgMail.send( message )
 
@@ -136,32 +139,28 @@ const forgotPasswordService = async( email: string ) => {
 
 const resetPasswordService = async( resetLink: string, newPass: string ) => {
     try{
-        interface JwtPayload {
-            email: string
-        }
-
         const resetSecret = process.env.RESET_SECRET as string
-        const { email } = verify( resetLink, resetSecret ) as JwtPayload
+        const { email } = verify( resetLink, resetSecret ) as JwtPayloadEmail
 
-        const userToBeUpdated = User.findOne({ resetLink: resetLink, email: email })
+        const userToBeUpdated = User.findOne({ resetLink, email })
 
-        if(!userToBeUpdated) {
-            throw createError(400, UIMessages.INVALID_LINK)
+        if( !userToBeUpdated ) {
+            throw createError( 400, UIMessages.INVALID_LINK )
         }
 
-        if(newPass === "") {
-            throw createError(400, UIMessages.INVALID_PASS)
+        if( newPass === "" ) {
+            throw createError( 400, UIMessages.INVALID_PASS )
         }
 
-        const salt = await genSalt(10);
+        const salt = await genSalt( 10 );
             
-        const hashedPassword = await hash(newPass, salt)
+        const hashedPassword = await hash( newPass, salt )
 
         await User.updateOne({ resetLink: resetLink, email: email }, { $set: { password: hashedPassword }})
 
         
     } catch(err: any) {
-        throw createError(400, err.message)
+        throw createError( 400, err.message )
     }
 }
 

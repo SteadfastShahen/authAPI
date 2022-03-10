@@ -22,7 +22,7 @@ export const UserSchema = new Schema({
     resetLink: { data: String, default: '' }
 });
   
-const User = model<IUser>('Users', UserSchema, 'Users');
+const User = model<IUser>( 'Users', UserSchema, 'Users' );
 
 
 export {
