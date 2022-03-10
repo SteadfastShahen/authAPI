@@ -1,6 +1,7 @@
 import '../env';
 import { join } from 'path';
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
+//import { ApolloServer } from "apollo-server";
 import { ChangeStreamDocument } from 'mongodb';
 import { generate } from 'text-to-image'; 
 import { connect } from 'mongoose';
@@ -12,7 +13,7 @@ connect( 'mongodb://localhost:27017/users-db', () => {
 });
 
 User.watch({ fullDocument: "updateLookup" }).on( "change", async ( change: ChangeStreamDocument<UserDocument> ) => {
-    if( change.updateDescription?.updatedFields.name ){
+    if ( change.updateDescription?.updatedFields.name ) {
         const newName: string = change.updateDescription?.updatedFields.name
         
         await generate( newName, {
@@ -20,7 +21,7 @@ User.watch({ fullDocument: "updateLookup" }).on( "change", async ( change: Chang
             bgColor: 'white',
             textColor: 'black',
             debug: true,
-            debugFilename: join('images', `${newName}.png`),
+            debugFilename: join( 'images', `${newName}.png` ),
         })
         
     }
@@ -31,12 +32,14 @@ const PORT =  process.env.PORT || 3000;
 
 const app: Express = express();
 
-// Middlewares
+// Middleware
+
 app.use( express.json() );
 
 // Routes
 
 app.use( '/auth', authRouter );
+
 
 app.listen( PORT, () => console.log(`server running on port ${PORT}`) );
 

@@ -1,82 +1,82 @@
 import { Request, Response } from 'express';
 import { getUserService, registerUserService, loginUserService, confirmUserService, forgotPasswordService, resetPasswordService } from '../service';
-import UIMessages from '../helper/messages';
+import { SUCCESS_REG, ACCESS_DENIED, VERIFIED, CONFIRM_REQUEST, PASS_RESET, PASS_CHANGED } from '../helper';
 
 const getUserController = async ( req: Request, res: Response ) => {
-    try{
+    try {
         const users = await getUserService()
 
         res.send({ usersArr: users })
-    }catch( err ) {
+    } catch( err ) {
         res.status(400).send( err )
     }
 }
 
 const registerUserController = async ( req: Request, res: Response ) => {
-    try{
+    try {
         const { name, email, password, confirmPass } = req.body
         
         await registerUserService( name, email, password, confirmPass )
 
-        res.send({ msg: UIMessages.SUCCESS_REG })
-    }catch( err ) {
+        res.send({ msg: SUCCESS_REG })
+    } catch( err ) {
         res.status(400).send( err )
     }
 }
 
 const confirmUserController = async ( req: Request, res: Response )=>{
-    try{
+    try {
         const { token } = req.body
-        if( !req.header('Authorization') ) {
-            res.status(400).send({ msg: UIMessages.ACCESS_DENIED })
+        if ( !req.header('Authorization') ) {
+            res.status(400).send({ msg: ACCESS_DENIED })
         }
-        else{
+        else {
             const currUserToken: any = req.header( 'Authorization' )
 
             await confirmUserService( token, currUserToken )
 
-            res.send({ msg: UIMessages.VERIFIED })
+            res.send({ msg: VERIFIED })
         }
 
-    }catch( err ) {
+    } catch( err ) {
         res.status(400).send( err )
     }
 }
 
 const loginUserController = async ( req: Request, res: Response )=>{
-    try{
+    try {
         const { email, password } = req.body
 
         const userToken = await loginUserService( email, password )
 
-        res.header( 'Authorization', userToken.token ).send({ auth: userToken.token, msg: UIMessages.CONFIRM_REQUEST })
-    }catch( err ) {
+        res.json({ auth: userToken.token, msg: CONFIRM_REQUEST })
+    } catch( err ) {
         res.status(400).send( err )
     }
 }
 
 const forgotPasswordController = async ( req: Request, res: Response )=>{
-    try{
+    try {
         const { email } = req.body
 
         await forgotPasswordService( email )
 
-        res.send({ msg: UIMessages.PASS_RESET })
+        res.send({ msg: PASS_RESET })
 
-    }catch( err ) {
+    } catch( err ) {
         res.status(400).send( err )
     }
 }
 
 const resetPasswordController = async ( req: Request, res: Response )=>{
-    try{
+    try {
         const { newPass } = req.body
         const { resetLink } = req.params
 
         await resetPasswordService( resetLink, newPass )
         
-        res.send({ msg: UIMessages.PASS_CHANGED })
-    }catch( err ) {
+        res.send({ msg: PASS_CHANGED })
+    } catch( err ) {
         res.status(400).send( err )
     }
 }

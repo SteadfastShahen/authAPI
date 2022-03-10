@@ -1,14 +1,28 @@
-export default{
-    EMAIL_EXIST: 'Email already exists',
-    SUCCESS_REG: 'Successfully registered',
-    EMAIL_NOT_REG: 'Email is not registered',
-    INVALID_PASS: 'Invalid password',
-    PASS_NO_MATCH: 'Passwords do not match',
-    ACCESS_DENIED: 'Access denied',
-    CONFIRM_REQUEST: 'Please confirm your account if you have not yet',
-    VERIFIED: 'Account verified',
-    INVALID_OPERATION: 'Invalid operation',
-    PASS_RESET: 'Reset link is sent to your email address',
-    INVALID_LINK: 'Invalid link',
-    PASS_CHANGED: 'Password changed'
+const EMAIL_EXIST = 'Email already exists'
+const SUCCESS_REG = 'Successfully registered'
+const EMAIL_NOT_REG = 'Email is not registered'
+const INVALID_PASS = 'Invalid password'
+const PASS_NO_MATCH = 'Passwords do not match'
+const ACCESS_DENIED = 'Access denied'
+const CONFIRM_REQUEST = 'Please confirm your account if you have not yet'
+const VERIFIED = 'Account verified'
+const INVALID_OPERATION = 'Invalid operation'
+const PASS_RESET = 'Reset link is sent to your email address'
+const INVALID_LINK = 'Invalid link'
+const PASS_CHANGED = 'Password changed'
+
+export {
+    EMAIL_EXIST,
+    SUCCESS_REG,
+    EMAIL_NOT_REG,
+    INVALID_PASS,
+    PASS_NO_MATCH,
+    ACCESS_DENIED,
+    CONFIRM_REQUEST,
+    VERIFIED,
+    INVALID_OPERATION,
+    PASS_RESET,
+    INVALID_LINK,
+    PASS_CHANGED,
 }
+

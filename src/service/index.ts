@@ -1,17 +1,14 @@
 import { genSalt, hash, compare } from 'bcrypt';
 import { sign, verify } from 'jsonwebtoken';
+import createError from 'http-errors';
 import sgMail from '@sendgrid/mail';
-import { JwtPayloadEmail, JwtPayloadId } from '../helper/interfaces';
-import emailMsgs from '../helper/emailMsgs';
-import UIMessages from '../helper/messages';
+import { registerUserMessage, forgotPassMessage, EMAIL_EXIST, PASS_NO_MATCH, ACCESS_DENIED, INVALID_OPERATION, EMAIL_NOT_REG, INVALID_PASS, INVALID_LINK, JwtPayloadEmail, JwtPayloadId } from '../helper';
 import { User } from '../models/User';
 
 sgMail.setApiKey( process.env.API_KEY as string );
 
-const createError = require( 'http-errors' );
-
 const getUserService = async () => {
-    try{
+    try {
         const users = await User.find()
         return users
     } catch(err: any) {
@@ -23,7 +20,7 @@ const registerUserService = async ( name: string, email: string, password: strin
     try {
         const emailCheck = await User.findOne({ email })
 
-        if( password == confirmPass && !emailCheck ) {
+        if ( password == confirmPass && !emailCheck ) {
             
             const salt = await genSalt(10);
             
@@ -39,7 +36,7 @@ const registerUserService = async ( name: string, email: string, password: strin
             const secret = process.env.TOKEN_CONFIRM_SECRET as string;
             const confirmToken = sign( { _id: currUserId._id }, secret )
 
-            const { fromName, fromEmail, subject, text, html1, html2 } = emailMsgs.registerUserMessage
+            const { fromName, fromEmail, subject, text, html1, html2 } = registerUserMessage
 
             const message = {
                 to: email,
@@ -53,7 +50,7 @@ const registerUserService = async ( name: string, email: string, password: strin
             //await sgMail.send( message )
         }
         else {
-            const errMsg = emailCheck ? UIMessages.EMAIL_EXIST : UIMessages.PASS_NO_MATCH
+            const errMsg = emailCheck ? EMAIL_EXIST : PASS_NO_MATCH
             throw createError( 400, errMsg )
         }
     } catch(err: any) {
@@ -62,9 +59,9 @@ const registerUserService = async ( name: string, email: string, password: strin
 }
 
 const confirmUserService = async( token: string, currUserToken: string ) => {
-    try{
-        if(!token) {
-            throw createError( 400, UIMessages.ACCESS_DENIED )
+    try {
+        if (!token) {
+            throw createError( 400, ACCESS_DENIED )
         }
     
         const confirmSecret = process.env.TOKEN_CONFIRM_SECRET as string
@@ -73,11 +70,11 @@ const confirmUserService = async( token: string, currUserToken: string ) => {
         const { _id: tokenId } = verify( token, confirmSecret ) as JwtPayloadId
         const { _id: currUserId } = verify( currUserToken, secret ) as JwtPayloadId
 
-        if( tokenId === currUserId ) {
+        if ( tokenId === currUserId ) {
             await User.updateOne({ _id: tokenId }, { $set: { verified: true } });
         }
         else {
-            throw createError( 400, UIMessages.INVALID_OPERATION )
+            throw createError( 400, INVALID_OPERATION )
         }
         
     } catch(err: any) {
@@ -88,14 +85,14 @@ const confirmUserService = async( token: string, currUserToken: string ) => {
 const loginUserService = async( email: string, password: string ) => {
     try {
         const currentUser = await User.findOne({ email })
-        if( !currentUser ) {
-            throw createError( 400, UIMessages.EMAIL_NOT_REG )
+        if ( !currentUser ) {
+            throw createError( 400, EMAIL_NOT_REG )
         }
             
         const passValidation = await compare( password, currentUser.password )
         
-        if( !passValidation ) {
-            throw createError( 400, UIMessages.INVALID_PASS )
+        if ( !passValidation ) {
+            throw createError( 400, INVALID_PASS )
         }
         
         const secret = process.env.TOKEN_SECRET as string;
@@ -108,16 +105,16 @@ const loginUserService = async( email: string, password: string ) => {
 }
 
 const forgotPasswordService = async( email: string ) => {
-    try{
+    try {
         const currentUser = await User.findOne({ email })
-        if( !currentUser ) {
-            throw createError( 400, UIMessages.EMAIL_NOT_REG )
+        if ( !currentUser ) {
+            throw createError( 400, EMAIL_NOT_REG )
         }
 
         const resetSecret = process.env.RESET_SECRET as string
         const linkFinal = sign({ email }, resetSecret)
 
-        const { name, fromEmail, subject, text, html1, html2 } = emailMsgs.forgotPassMessage
+        const { name, fromEmail, subject, text, html1, html2 } = forgotPassMessage
 
         const message = {
             to: email,
@@ -138,18 +135,18 @@ const forgotPasswordService = async( email: string ) => {
 }
 
 const resetPasswordService = async( resetLink: string, newPass: string ) => {
-    try{
+    try {
         const resetSecret = process.env.RESET_SECRET as string
         const { email } = verify( resetLink, resetSecret ) as JwtPayloadEmail
 
         const userToBeUpdated = User.findOne({ resetLink, email })
 
-        if( !userToBeUpdated ) {
-            throw createError( 400, UIMessages.INVALID_LINK )
+        if ( !userToBeUpdated ) {
+            throw createError( 400, INVALID_LINK )
         }
 
-        if( newPass === "" ) {
-            throw createError( 400, UIMessages.INVALID_PASS )
+        if ( newPass === "" ) {
+            throw createError( 400, INVALID_PASS )
         }
 
         const salt = await genSalt( 10 );
