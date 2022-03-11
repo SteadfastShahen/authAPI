@@ -1,14 +1,14 @@
 import '../env';
 import { join } from 'path';
-import express, { Express } from 'express';
-//import { ApolloServer } from "apollo-server";
+import { ApolloServer } from "apollo-server";
 import { ChangeStreamDocument } from 'mongodb';
 import { generate } from 'text-to-image'; 
 import { connect } from 'mongoose';
 import { User, UserDocument } from './models/User';
-import { authRouter } from './routes/auth';
+import { resolvers } from './resolvers';
+import { typeDefs } from './schema';
 
-connect( 'mongodb://localhost:27017/users-db', () => {
+connect( 'mongodb://localhost:27017/users-db', { useNewUrlParser: true }, () => {
     console.log('Successfully connected to db' )
 });
 
@@ -30,16 +30,14 @@ User.watch({ fullDocument: "updateLookup" }).on( "change", async ( change: Chang
 
 const PORT =  process.env.PORT || 3000;
 
-const app: Express = express();
+const app = new ApolloServer({ 
+    typeDefs, 
+    resolvers,
+    context: ({ req }) => {
+        const userToken = req.headers.authorization 
+        return { userToken }
+    } 
+})
 
-// Middleware
 
-app.use( express.json() );
-
-// Routes
-
-app.use( '/auth', authRouter );
-
-
-app.listen( PORT, () => console.log(`server running on port ${PORT}`) );
-
+app.listen( PORT, () => console.log( `server running on port ${PORT}`) );

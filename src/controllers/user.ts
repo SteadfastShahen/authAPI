@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+/*import { Request, Response } from 'express';
 import { getUserService, registerUserService, loginUserService, confirmUserService, forgotPasswordService, resetPasswordService } from '../service';
 import { SUCCESS_REG, ACCESS_DENIED, VERIFIED, CONFIRM_REQUEST, PASS_RESET, PASS_CHANGED } from '../helper';
 
@@ -88,4 +88,4 @@ export {
     loginUserController,
     forgotPasswordController,
     resetPasswordController
-}
+}*/

@@ -26,13 +26,13 @@ const registerUserService = async ( name: string, email: string, password: strin
             
             const hashedPassword = await hash( password, salt )
 
-            await User.create({
+            const newUser = await User.create({
                 name,
                 email,
                 password: hashedPassword
             })
             
-            const currUserId: any = await User.findOne({ email: email }, { _id: 1 });
+            const currUserId: any = await User.findOne({ email }, { _id: 1 });
             const secret = process.env.TOKEN_CONFIRM_SECRET as string;
             const confirmToken = sign( { _id: currUserId._id }, secret )
 
@@ -48,6 +48,7 @@ const registerUserService = async ( name: string, email: string, password: strin
                 html: html1 + confirmToken + html2
             }
             //await sgMail.send( message )
+            return newUser
         }
         else {
             const errMsg = emailCheck ? EMAIL_EXIST : PASS_NO_MATCH
@@ -58,31 +59,25 @@ const registerUserService = async ( name: string, email: string, password: strin
     }
 }
 
-const confirmUserService = async( token: string, currUserToken: string ) => {
+const confirmUserService = async ( token: string ) => {
     try {
         if (!token) {
             throw createError( 400, ACCESS_DENIED )
         }
     
         const confirmSecret = process.env.TOKEN_CONFIRM_SECRET as string
-        const secret = process.env.TOKEN_SECRET as string
 
         const { _id: tokenId } = verify( token, confirmSecret ) as JwtPayloadId
-        const { _id: currUserId } = verify( currUserToken, secret ) as JwtPayloadId
 
-        if ( tokenId === currUserId ) {
-            await User.updateOne({ _id: tokenId }, { $set: { verified: true } });
-        }
-        else {
-            throw createError( 400, INVALID_OPERATION )
-        }
+        return await User.updateOne({ _id: tokenId }, { $set: { verified: true } });
+        
         
     } catch(err: any) {
         throw createError( 400, err.message )
     }
 }
 
-const loginUserService = async( email: string, password: string ) => {
+const loginUserService = async ( email: string, password: string ) => {
     try {
         const currentUser = await User.findOne({ email })
         if ( !currentUser ) {
@@ -104,7 +99,7 @@ const loginUserService = async( email: string, password: string ) => {
     }
 }
 
-const forgotPasswordService = async( email: string ) => {
+const forgotPasswordService = async ( email: string ) => {
     try {
         const currentUser = await User.findOne({ email })
         if ( !currentUser ) {
@@ -134,7 +129,7 @@ const forgotPasswordService = async( email: string ) => {
     }
 }
 
-const resetPasswordService = async( resetLink: string, newPass: string ) => {
+const resetPasswordService = async ( resetLink: string, newPass: string ) => {
     try {
         const resetSecret = process.env.RESET_SECRET as string
         const { email } = verify( resetLink, resetSecret ) as JwtPayloadEmail

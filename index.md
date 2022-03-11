@@ -19,3 +19,5 @@ Step 2
 3. fix code visually (throw errs, email: email type expressions, spaces, remove emails from service, review if/else expressions[not required when throwing error], move interfaces to different file)
 
 4. export from helpers variables instead of objects
+
+5. get rid of service/controllers folders 
