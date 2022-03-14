@@ -1,4 +1,4 @@
-import { queries } from "./auth.query";
+import { queries } from './auth.query';
 import { mutations } from './auth.mutation';
 
 const resolvers = {

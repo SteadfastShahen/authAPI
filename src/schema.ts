@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server'
-
 const typeDefs = gql`
+
+    directive @isAuthenticated on FIELD_DEFINITION
+
     type User {
         name: String!
         email: String!
@@ -12,8 +14,8 @@ const typeDefs = gql`
         token: String
     }
     
-    type Query { #@authDirective( userToken: context.userToken ) 
-        getAllUsers: [ User! ]! #@auth
+    type Query { 
+        getAllUsers: [ User! ]! @isAuthenticated
     }
 
     type Mutation {

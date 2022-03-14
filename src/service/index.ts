@@ -140,7 +140,7 @@ const resetPasswordService = async ( resetLink: string, newPass: string ) => {
             throw createError( 400, INVALID_LINK )
         }
 
-        if ( newPass === "" ) {
+        if ( newPass === '' ) {
             throw createError( 400, INVALID_PASS )
         }
 

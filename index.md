@@ -21,3 +21,5 @@ Step 2
 4. export from helpers variables instead of objects
 
 5. get rid of service/controllers folders 
+
+6. node scheduler implementation/ no libs (db) 

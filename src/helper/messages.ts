@@ -10,6 +10,10 @@ const INVALID_OPERATION = 'Invalid operation'
 const PASS_RESET = 'Reset link is sent to your email address'
 const INVALID_LINK = 'Invalid link'
 const PASS_CHANGED = 'Password changed'
+const INVALID_TOKEN = 'Invalid token'
+const JWT_AUTH = 'You must supply a JWT for authorization'
+const NO_AUTH = 'You are not authorized'
+
 
 export {
     EMAIL_EXIST,
@@ -24,5 +28,8 @@ export {
     PASS_RESET,
     INVALID_LINK,
     PASS_CHANGED,
+    INVALID_TOKEN,
+    JWT_AUTH,
+    NO_AUTH
 }
 
