@@ -13,6 +13,7 @@ const PASS_CHANGED = 'Password changed'
 const INVALID_TOKEN = 'Invalid token'
 const JWT_AUTH = 'You must supply a JWT for authorization'
 const NO_AUTH = 'You are not authorized'
+const UPDATED_SUCCESSFULLY = 'Updated successfully'
 
 
 export {
@@ -30,6 +31,7 @@ export {
     PASS_CHANGED,
     INVALID_TOKEN,
     JWT_AUTH,
-    NO_AUTH
+    NO_AUTH,
+    UPDATED_SUCCESSFULLY
 }
 

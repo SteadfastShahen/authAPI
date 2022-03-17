@@ -1,5 +1,5 @@
 import createError from 'http-errors'
-import { registerUserService, confirmUserService, loginUserService } from '../service'
+import { registerUserService, confirmUserService, loginUserService, forgotPasswordService, resetPasswordService } from '../service'
 
 const mutations = {
     Mutation: {
@@ -32,6 +32,26 @@ const mutations = {
                 return await loginUserService( email, password )
                 
             } catch(err: any) {
+                throw createError( 400, err.message )
+            }
+        },
+        async forgotPassword ( parent: any, args: any, context: any, info: any ) {
+            try {
+                const { email } = args
+
+                return await forgotPasswordService( email )
+                
+            } catch(err: any) {
+                throw createError( 400, err.message )
+            }
+        },
+        async resetPassword ( parent: any, args: any, context: any, info: any ) {
+            try {
+                const { resetLink, newPass } = args
+
+                return await resetPasswordService( resetLink, newPass )
+                
+            } catch( err: any ) {
                 throw createError( 400, err.message )
             }
         }
