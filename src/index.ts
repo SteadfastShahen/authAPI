@@ -1,14 +1,12 @@
 import '../env';
 import { join } from 'path';
-import { makeExecutableSchema } from '@graphql-tools/schema'
 import { ApolloServer } from 'apollo-server';
 import { ChangeStreamDocument } from 'mongodb';
 import { generate } from 'text-to-image'; 
 import { connect } from 'mongoose';
 import { authDirectiveTransformer } from './directives';
 import { User, UserDocument } from './models/User';
-import { resolvers } from './resolvers';
-import { typeDefs } from './schema';
+import { application } from './modules'
 
 
 connect( 'mongodb://localhost:27017/users-db', { useNewUrlParser: true }, () => {
@@ -33,10 +31,7 @@ User.watch({ fullDocument: 'updateLookup' }).on( 'change', async ( change: Chang
 
 const PORT =  process.env.PORT || 3000;
 
-let schema = makeExecutableSchema({
-    typeDefs,
-    resolvers
-});
+let schema = application.createSchemaForApollo()
 
 schema = authDirectiveTransformer( schema, 'isAuthenticated' )
 

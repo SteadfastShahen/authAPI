@@ -13,14 +13,6 @@ const typeDefs = gql`
     type tokenObject {
         token: String
     }
-
-    type resetObject {
-        resetLink: String
-    }
-
-    type messageObject {
-        message: String
-    }
     
     type Query { 
         getAllUsers: [ User! ]! @isAuthenticated
@@ -30,8 +22,6 @@ const typeDefs = gql`
         registerUser ( name: String!, email: String!, password: String!, confirmPass: String! ): User 
         confirmUser ( token: String ): User
         loginUser ( email: String, password: String ): tokenObject
-        forgotPassword ( email: String ): resetObject
-        resetPassword ( resetLink: String, newPass: String ): messageObject
     }
 
 `
