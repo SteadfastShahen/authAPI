@@ -25,7 +25,6 @@ const UserSchema = new Schema({
   
 const User = model<IUser>( 'Users', UserSchema, 'Users' );
 
-
 export {
     User,
     UserDocument

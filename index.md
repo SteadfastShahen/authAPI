@@ -23,3 +23,12 @@ Step 2
 5. get rid of service/controllers folders 
 
 6. node scheduler implementation/ no libs (db) 
+
+
+
+
+crypto
+
+POST /address - creates a new Tron address
+GET /address/$address - Return balance
+POST /transfer (from, to, amount)

@@ -1,9 +1,9 @@
 import { mapSchema, getDirective, MapperKind } from '@graphql-tools/utils'
 import { defaultFieldResolver } from 'graphql'
-import { verify } from 'jsonwebtoken';
+import { verify } from 'jsonwebtoken'
 import createError from 'http-errors'
-import { JwtPayloadId, JWT_AUTH, INVALID_TOKEN, NO_AUTH } from '../helper';
-import { User } from '../models/User';
+import { JwtPayloadId, JWT_AUTH, INVALID_TOKEN, NO_AUTH } from '../helper'
+import { User } from '../models/User'
 
 function authDirectiveTransformer( schema: any, directiveName: any ) {
     return mapSchema( schema, {
@@ -26,10 +26,10 @@ function authDirectiveTransformer( schema: any, directiveName: any ) {
                 const { _id } = verify( token, process.env.TOKEN_SECRET as string ) as JwtPayloadId;
                 const currUser = await User.findOne({ _id })
                 if( !currUser )
-                    throw createError( 400, INVALID_TOKEN);
+                    throw createError( 400, INVALID_TOKEN)
                 return result;
             } catch (err) {
-                throw createError( 400, NO_AUTH);
+                throw createError( 400, NO_AUTH)
             }
           }
           return fieldConfig;

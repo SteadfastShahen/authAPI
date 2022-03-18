@@ -2,12 +2,12 @@ import { genSalt, hash, compare } from 'bcrypt';
 import { sign, verify } from 'jsonwebtoken';
 import createError from 'http-errors';
 import sgMail from '@sendgrid/mail';
-import { registerUserMessage, forgotPassMessage, EMAIL_EXIST, PASS_NO_MATCH, ACCESS_DENIED, EMAIL_NOT_REG, INVALID_PASS, INVALID_LINK, UPDATED_SUCCESSFULLY, JwtPayloadEmail, JwtPayloadId } from '../helper';
-import { User } from '../models/User';
+import { registerUserMessage, forgotPassMessage, EMAIL_EXIST, PASS_NO_MATCH, ACCESS_DENIED, EMAIL_NOT_REG, INVALID_PASS, INVALID_LINK, UPDATED_SUCCESSFULLY, JwtPayloadEmail, JwtPayloadId } from '../../../helper';
+import { User } from '../../../models/User';
 
 sgMail.setApiKey( process.env.API_KEY as string );
 
-const getUserService = async () => {
+const getUserProvider = async () => {
     try {
         const users = await User.find()
         return users
@@ -16,7 +16,7 @@ const getUserService = async () => {
     }
 }
 
-const registerUserService = async ( name: string, email: string, password: string, confirmPass: string ) => {
+const registerUserProvider = async ( name: string, email: string, password: string, confirmPass: string ) => {
     try {
         const emailCheck = await User.findOne({ email })
 
@@ -59,7 +59,7 @@ const registerUserService = async ( name: string, email: string, password: strin
     }
 }
 
-const confirmUserService = async ( token: string ) => {
+const confirmUserProvider = async ( token: string ) => {
     try {
         if (!token) {
             throw createError( 400, ACCESS_DENIED )
@@ -77,7 +77,7 @@ const confirmUserService = async ( token: string ) => {
     }
 }
 
-const loginUserService = async ( email: string, password: string ) => {
+const loginUserProvider = async ( email: string, password: string ) => {
     try {
         const currentUser = await User.findOne({ email })
         if ( !currentUser ) {
@@ -99,7 +99,7 @@ const loginUserService = async ( email: string, password: string ) => {
     }
 }
 
-const forgotPasswordService = async ( email: string ) => {
+const forgotPasswordProvider = async ( email: string ) => {
     try {
         const currentUser = await User.findOne({ email })
         if ( !currentUser ) {
@@ -131,7 +131,7 @@ const forgotPasswordService = async ( email: string ) => {
     }
 }
 
-const resetPasswordService = async ( resetLink: string, newPass: string ) => {
+const resetPasswordProvider = async ( resetLink: string, newPass: string ) => {
     try {
         const resetSecret = process.env.RESET_SECRET as string
         const { email } = verify( resetLink, resetSecret ) as JwtPayloadEmail
@@ -161,10 +161,10 @@ const resetPasswordService = async ( resetLink: string, newPass: string ) => {
 }
 
 export {
-    getUserService,
-    registerUserService,
-    confirmUserService,
-    loginUserService,
-    forgotPasswordService,
-    resetPasswordService
+    getUserProvider,
+    registerUserProvider,
+    confirmUserProvider,
+    loginUserProvider,
+    forgotPasswordProvider,
+    resetPasswordProvider
 }

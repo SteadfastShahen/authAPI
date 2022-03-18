@@ -1,14 +1,9 @@
 import { createApplication } from 'graphql-modules'
-import { forgetPassModule } from './forgetPass'
-import { userModule } from './user'
+import { authModule } from './authentication/authentication.module'
 
-// This is your application, it contains your GraphQL schema and the implementation of it.
 const application = createApplication({
-  modules: [ userModule, forgetPassModule ]
+  modules: [ authModule ]
 })
-
-// This is your actual GraphQL schema
-const mySchema = application.schema
 
 export {
     application
