@@ -1,12 +1,18 @@
 import { join } from 'path';
-import { ChangeStreamDocument } from 'mongodb';
-import { generate } from 'text-to-image'; 
+import { ChangeStreamDocument } from 'mongodb'
+import { PubSub } from 'graphql-subscriptions'
+import { generate } from 'text-to-image';
 import { UserDocument } from '../models/User'
+
+
+const pubsub = new PubSub()
 
 const generateImage = async ( change: ChangeStreamDocument<UserDocument> ) => {
     if ( change.updateDescription?.updatedFields.name ) {
         const newName: string = change.updateDescription?.updatedFields.name
-        
+
+        pubsub.publish('NAME_CHANGED', { nameChanged: 'Changed' }); 
+
         await generate( newName, {
             fontFamily: 'Arial',
             bgColor: 'white',

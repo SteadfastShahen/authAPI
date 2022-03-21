@@ -1,19 +1,12 @@
-import createError from 'http-errors'
-import {  } from '../../../helper'
+import { PubSub } from 'graphql-subscriptions'
 
+const pubsub = new PubSub()
 
 const subscriptions = {
     Subscription: {
-        async notifyChange ( parent: any, args: any, context: any, info: any ) {
-            try {
-                const { email } = args
-
-                // return await forgotPasswordService( email )
-                
-            } catch(err: any) {
-                throw createError( 400, err.message )
-            }
-        }
+        nameChanged: {
+          subscribe: () => pubsub.asyncIterator(["NAME_CHANGED"]),
+        },
     }
 }
 
