@@ -1,3 +1,7 @@
 type Subscription {
-    nameChanged: String
+    nameChanged ( userKey: String ): KeyHolder
+}
+
+type KeyHolder {
+    changeKey: String
 }
