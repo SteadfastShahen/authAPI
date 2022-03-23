@@ -25,7 +25,7 @@ let schema = application.createSchemaForApollo();
 schema = authDirectiveTransformer( schema, "isAuthenticated" );
 
 const app = express();
-const httpServer = createServer(app);
+const httpServer = createServer( app );
 
 const wsServer = new WebSocketServer({
   server: httpServer,

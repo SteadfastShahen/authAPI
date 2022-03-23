@@ -17,7 +17,6 @@ type messageObject {
     message: String
 }
 
-
 type Mutation {
     forgotPassword ( email: String ): resetObject
     resetPassword ( resetLink: String, newPass: String ): messageObject

@@ -1,11 +1,11 @@
-import { genSalt, hash, compare } from 'bcrypt';
-import { sign, verify } from 'jsonwebtoken';
-import createError from 'http-errors';
-import sgMail from '@sendgrid/mail';
-import { registerUserMessage, forgotPassMessage, EMAIL_EXIST, PASS_NO_MATCH, ACCESS_DENIED, EMAIL_NOT_REG, INVALID_PASS, INVALID_LINK, UPDATED_SUCCESSFULLY, JwtPayloadEmail, JwtPayloadId } from '../../../helper';
-import { User } from '../../../models/User';
+import { genSalt, hash, compare } from 'bcrypt'
+import { sign, verify } from 'jsonwebtoken'
+import createError from 'http-errors'
+import sgMail from '@sendgrid/mail'
+import { registerUserMessage, forgotPassMessage, EMAIL_EXIST, PASS_NO_MATCH, ACCESS_DENIED, EMAIL_NOT_REG, INVALID_PASS, INVALID_LINK, UPDATED_SUCCESSFULLY, JwtPayloadEmail, JwtPayloadId } from '../../../helper'
+import { User } from '../../../models/User'
 
-sgMail.setApiKey( process.env.API_KEY as string );
+sgMail.setApiKey( process.env.API_KEY as string )
 
 const getUserProvider = async () => {
     try {
